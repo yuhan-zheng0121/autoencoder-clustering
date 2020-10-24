@@ -12,18 +12,18 @@ parser.add_argument('--latent_dim', type=int, default=60)
 parser.add_argument('--epoch', type=int, default=100)
 parser.add_argument('--num_cluster', type=int, default=4)
 
+from train import *
+from evaluation import *
+
 def main(args):
     # Enable GPU
     if args.gpu:
-        %tensorflow_version 2.x
+        #%tensorflow_version 2.x
         import tensorflow as tf
         device_name = tf.test.gpu_device_name()
         if device_name != '/device:GPU:0':
           raise SystemError('GPU device not found')
         print('Found GPU at: {}'.format(device_name))
-
-    from train import *
-    from evaluation import *
 
     BLOCK_SIZE = args.block_size #28
     NUM_BLOCK = args.num_block #22
@@ -59,7 +59,7 @@ def main(args):
     '''
     Reconstruct
     '''
-    test_images_clear, test_images_blur = gen_large_train_set(validation_images, val_blur_imgs, , BLOCK_SIZE, BATCH_SIZE)
+    test_images_clear, test_images_blur = gen_large_train_set(validation_images, val_blur_imgs, BLOCK_SIZE, BATCH_SIZE)
     z, z_mean, z_sig, y, y_logits, z_prior_mean, z_prior_sig = encoder.predict(test_images_blur[:BATCH_SIZE])
     for i in range(BATCH_SIZE, len(test_images_blur), BATCH_SIZE):
         new_z, m, s, y, log, pm, ps = encoder.predict(test_images_blur[i: i+BATCH_SIZE])
