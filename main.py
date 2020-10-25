@@ -2,6 +2,9 @@ import argparse
 import pprint
 import json
 
+from train import *
+from evaluation import *
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=bool, default=True)
 parser.add_argument('--block_size', type=int, default=18)
@@ -21,9 +24,6 @@ def main(args):
         if device_name != '/device:GPU:0':
           raise SystemError('GPU device not found')
         print('Found GPU at: {}'.format(device_name))
-
-    from train import *
-    from evaluation import *
 
     BLOCK_SIZE = args.block_size #28
     NUM_BLOCK = args.num_block #22
@@ -59,7 +59,7 @@ def main(args):
     '''
     Reconstruct
     '''
-    test_images_clear, test_images_blur = gen_large_train_set(validation_images, val_blur_imgs, , BLOCK_SIZE, BATCH_SIZE)
+    test_images_clear, test_images_blur = gen_large_train_set(validation_images, val_blur_imgs, BLOCK_SIZE, BATCH_SIZE)
     z, z_mean, z_sig, y, y_logits, z_prior_mean, z_prior_sig = encoder.predict(test_images_blur[:BATCH_SIZE])
     for i in range(BATCH_SIZE, len(test_images_blur), BATCH_SIZE):
         new_z, m, s, y, log, pm, ps = encoder.predict(test_images_blur[i: i+BATCH_SIZE])
